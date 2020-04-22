@@ -37,7 +37,7 @@ public class TrelloClient {
                 .queryParam("key", trelloConfig.getTrelloAppKey())
                 .queryParam("token", trelloConfig.getTrelloToken())
                 .queryParam("fields", "name,id")
-                .queryParam("lists", "all")
+                .queryParam("lists", "open")
                 .build().encode().toUri();
     }
 
@@ -48,8 +48,9 @@ public class TrelloClient {
                 .queryParam("name", trelloCardDto.getName())
                 .queryParam("desc", trelloCardDto.getDescription())
                 .queryParam("pos", trelloCardDto.getPos())
-                .queryParam("listId", trelloCardDto.getListId())
+                .queryParam("idList", trelloCardDto.getListId())
                 .build().encode().toUri();
+        System.out.println(url);
         return restTemplate.postForObject(url, null, CreatedTrelloCard.class);
     }
 

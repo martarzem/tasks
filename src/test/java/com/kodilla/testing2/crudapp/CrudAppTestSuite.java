@@ -82,37 +82,37 @@ public class CrudAppTestSuite {
                             theForm.findElement(By.xpath(".//button[@data-task-delete-button=\"\"]"));
                     deleteButton.click();
                 });
-        Thread.sleep(3000);
+        Thread.sleep(2000);
     }
 
     private boolean checkTaskExistsInTrello(String taskName) throws InterruptedException {
         final String TRELLO_URL = "https://trello.com/login";
         boolean result = false;
-        WebDriver driverTrello = WebDriverConfig.getDriver(WebDriverConfig.FIREFOX);
-        driverTrello.get(TRELLO_URL);
 
-        driverTrello.findElement(By.id("user")).sendKeys("LOGIN");
-        driverTrello.findElement(By.id("password")).sendKeys("HASŁO");
-        WebElement el = driverTrello.findElement(By.id("login"));
+        driver.get(TRELLO_URL);
+
+        driver.findElement(By.id("user")).sendKeys("LOGIN");
+        driver.findElement(By.id("password")).sendKeys("HASŁO");
+        WebElement el = driver.findElement(By.id("login"));
         el.submit();
 
         Thread.sleep(4000);
 
-        driverTrello.findElement(By.id("password")).sendKeys("HASŁO");
-        driverTrello.findElement(By.id("login-submit")).submit();
+        driver.findElement(By.id("password")).sendKeys("HASŁO");
+        driver.findElement(By.id("login-submit")).submit();
 
         Thread.sleep(4000);
 
-        driverTrello.findElements(By.xpath("//a[@class=\"board-tile\"]")).stream()
+        driver.findElements(By.xpath("//a[@class=\"board-tile\"]")).stream()
                 .filter(aHref -> aHref.findElements(By.xpath(".//div[@title=\"Kodilla Application\"]")).size() > 0)
                 .forEach(WebElement::click);
 
         Thread.sleep(4000);
 
-        result = driverTrello.findElements(By.xpath("//span")).stream()
+        result = driver.findElements(By.xpath("//span")).stream()
                 .anyMatch(theSpan -> theSpan.getText().equals(taskName));
 
-        driverTrello.close();
+        driver.close();
 
         return result;
     }
@@ -123,6 +123,5 @@ public class CrudAppTestSuite {
         //sendTestTaskToTrello(taskName);
         //assertTrue(checkTaskExistsInTrello(taskName));
         deleteCrudAppTestTask(taskName);
-
     }
 }

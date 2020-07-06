@@ -37,4 +37,14 @@ public class EmailScheduler {
                 ""
         ));
     }
+
+    @Scheduled(cron = "0 0 10 * * *")
+    public void sendQtyInformationEmail() {
+        simpleEmailService.sendQty(new Mail(
+                adminConfig.getAdminMail(),
+                SUBJECT,
+                createMessage(),
+                ""
+        ));
+    }
 }

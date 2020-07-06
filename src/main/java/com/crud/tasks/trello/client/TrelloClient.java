@@ -36,7 +36,7 @@ public class TrelloClient {
                 .queryParam("key", trelloConfig.getTrelloAppKey())
                 .queryParam("token", trelloConfig.getTrelloToken())
                 .queryParam("fields", "name,id")
-                .queryParam("lists", "open")
+                .queryParam("lists", "all")
                 .build().encode().toUri();
     }
 
@@ -55,6 +55,7 @@ public class TrelloClient {
 
     public List<TrelloBoardDto> getTrelloBoards() {
         try {
+            System.out.println(getBoardUrl());
             TrelloBoardDto[] boardsResponse = restTemplate.getForObject(getBoardUrl(), TrelloBoardDto[].class);
             return Arrays.asList(ofNullable(boardsResponse).orElse(new TrelloBoardDto[0]));
         } catch (RestClientException e) {

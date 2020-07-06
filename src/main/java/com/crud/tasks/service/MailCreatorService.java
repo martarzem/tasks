@@ -39,15 +39,32 @@ public class MailCreatorService {
         context.setVariable("message", message);
         context.setVariable("tasks_url", "http://localhost:8888/tasks_frontend/");
         context.setVariable("button", "Visit website");
-        context.setVariable("admin_name", adminConfig.getAdminName());
         context.setVariable("show_button", false);
         context.setVariable("is_friend", false);
         context.setVariable("admin_config", adminConfig);
         context.setVariable("application_functionality", functionality);
         context.setVariable("goodbye_message", "If you have a question, do not hesitate to contact us!");
-        context.setVariable("companyName", companyConfig.getCompanyName());
-        context.setVariable("company_details", comapanyDetails);
-        context.setVariable("companyGoal", companyConfig.getCompanyGoal().toUpperCase());
+        context.setVariable("mail_phone", comapanyDetails);
+        context.setVariable("company_details", companyConfig);
         return templateEngine.process("mail/created-trello-card-mail", context);
+    }
+
+    public String buildTrelloTasksQtyEmail(String message) {
+        List<String> comapanyDetails = new ArrayList<>();
+        comapanyDetails.add(companyConfig.getCompanyEmail());
+        comapanyDetails.add(companyConfig.getCompanyPhone());
+
+        Context context = new Context();
+        context.setVariable("preview_message", "Daily Trello overview");
+        context.setVariable("message", message);
+        context.setVariable("tasks_url", "http://localhost:8888/tasks_frontend/");
+        context.setVariable("button", "Visit website");
+        context.setVariable("show_button", false);
+        context.setVariable("is_friend", false);
+        context.setVariable("admin_config", adminConfig);
+        context.setVariable("goodbye_message", "If you have a question, do not hesitate to contact us!");
+        context.setVariable("mail_phone", comapanyDetails);
+        context.setVariable("company_details", companyConfig);
+        return templateEngine.process("mail/scheduler-mail-trello-task-qty", context);
     }
 }

@@ -2,7 +2,6 @@ package com.kodilla.testing2.crudapp;
 
 import com.kodilla.testing2.config.WebDriverConfig;
 import org.openqa.selenium.support.ui.Select;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -27,11 +26,6 @@ public class CrudAppTestSuite {
         driver.get(BASE_URL);
 
         generator = new Random();
-    }
-
-    @After
-    public void cleanAfterTest() {
-        driver.close();
     }
 
     private String createCrudAppTestTask() throws InterruptedException {
@@ -61,15 +55,21 @@ public class CrudAppTestSuite {
                         anyForm.findElement(By.xpath(".//p[@class=\"datatable__field-value\"]"))
                                 .getText().equals(taskName))
                 .forEach(theForm -> {
-                    WebElement selectElement = theForm.findElement(By.xpath(".//select[1]"));
-                    Select select = new Select(selectElement);
-                    select.selectByIndex(1);
+                    WebElement selectBoard = theForm.findElement(By.xpath(".//select[1]"));
+                    Select selectB = new Select(selectBoard);
+                    selectB.selectByIndex(1);
+
+                    WebElement selectList = theForm.findElement(By.xpath(".//select[2]"));
+                    Select selectL = new Select(selectList);
+                    selectL.selectByIndex(3);
 
                     WebElement buttonCreateCard =
                             theForm.findElement(By.xpath(".//button[contains(@class, \"card-creation\")]"));
                     buttonCreateCard.click();
                 });
         Thread.sleep(5000);
+
+        driver.switchTo().alert().accept();
     }
 
     private void deleteCrudAppTestTask(String taskName) throws InterruptedException {
@@ -82,32 +82,30 @@ public class CrudAppTestSuite {
                             theForm.findElement(By.xpath(".//button[@data-task-delete-button=\"\"]"));
                     deleteButton.click();
                 });
-        Thread.sleep(2000);
+        Thread.sleep(5000);
+
+        driver.close();
     }
 
     private boolean checkTaskExistsInTrello(String taskName) throws InterruptedException {
         final String TRELLO_URL = "https://trello.com/login";
         boolean result = false;
 
+        driver = WebDriverConfig.getDriver(WebDriverConfig.FIREFOX);
         driver.get(TRELLO_URL);
 
-        driver.findElement(By.id("user")).sendKeys("LOGIN");
-        driver.findElement(By.id("password")).sendKeys("HASŁO");
+        driver.findElement(By.id("user")).sendKeys("marta.rzempowska@gmail.com");
+        driver.findElement(By.id("password")).sendKeys("Voldemort");
         WebElement el = driver.findElement(By.id("login"));
         el.submit();
 
-        Thread.sleep(4000);
-
-        driver.findElement(By.id("password")).sendKeys("HASŁO");
-        driver.findElement(By.id("login-submit")).submit();
-
-        Thread.sleep(4000);
+        Thread.sleep(5000);
 
         driver.findElements(By.xpath("//a[@class=\"board-tile\"]")).stream()
                 .filter(aHref -> aHref.findElements(By.xpath(".//div[@title=\"Kodilla Application\"]")).size() > 0)
                 .forEach(WebElement::click);
 
-        Thread.sleep(4000);
+        Thread.sleep(5000);
 
         result = driver.findElements(By.xpath("//span")).stream()
                 .anyMatch(theSpan -> theSpan.getText().equals(taskName));
@@ -120,8 +118,8 @@ public class CrudAppTestSuite {
     @Test
     public void shouldCreateTrelloCard() throws InterruptedException {
         String taskName = createCrudAppTestTask();
-        //sendTestTaskToTrello(taskName);
-        //assertTrue(checkTaskExistsInTrello(taskName));
+        sendTestTaskToTrello(taskName);
         deleteCrudAppTestTask(taskName);
+        assertTrue(checkTaskExistsInTrello(taskName));
     }
 }

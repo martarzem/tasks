@@ -29,6 +29,9 @@ public class SimpleEmailService {
             messageHelper.setTo(mail.getMailTo());
             messageHelper.setSubject(mail.getSubject());
             messageHelper.setText(mailCreatorService.buildTrelloCardEmail(mail.getMessage()), true);
+            if (mail.getToCc() != null && !mail.getToCc().isEmpty()) {
+                messageHelper.setCc(mail.getToCc());
+            }
         };
     }
 
@@ -38,6 +41,9 @@ public class SimpleEmailService {
             messageHelper.setTo(mail.getMailTo());
             messageHelper.setSubject(mail.getSubject());
             messageHelper.setText(mailCreatorService.buildTrelloTasksQtyEmail(mail.getMessage()), true);
+            if (mail.getToCc() != null && !mail.getToCc().isEmpty()) {
+                messageHelper.setCc(mail.getToCc());
+            }
         };
     }
 
@@ -53,6 +59,16 @@ public class SimpleEmailService {
     }
 
     public void send(final Mail mail) {
+        LOGGER.info("Starting email preparation...");
+        try {
+            javaMailSender.send(createMailMessage(mail));
+            LOGGER.info("Email has been sent.");
+        } catch (MailException e) {
+            LOGGER.error("Failed to process email sending: ", e.getMessage(), e);
+        }
+    }
+
+    public void sendMimeMessage(final Mail mail) {
         LOGGER.info("Starting email preparation...");
         try {
             javaMailSender.send(createMimeMessage(mail));
